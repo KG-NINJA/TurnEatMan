@@ -170,6 +170,26 @@ function playEatMonsterSound() {
 }
 
 // --- 実況読み上げ（TTS） ---
+// --- iOS用 TTSアンロックボタン処理 ---
+document.addEventListener('DOMContentLoaded', () => {
+  const unlockBtn = document.getElementById('tts-unlock-btn');
+  if (unlockBtn) {
+    unlockBtn.addEventListener('click', () => {
+      if (window.speechSynthesis) {
+        const u = new SpeechSynthesisUtterance('');
+        u.lang = 'ja-JP';
+        window.speechSynthesis.speak(u);
+      }
+      unlockBtn.disabled = true;
+      unlockBtn.style.opacity = 0.5;
+      setTimeout(() => {
+        const cont = document.getElementById('tts-unlock-container');
+        if (cont) cont.style.display = 'none';
+      }, 600);
+    }, { once: true });
+  }
+});
+
 // --- 実況読み上げ（TTS）・キュー制御付き ---
 let narrationQueue = [];
 let narrationSpeaking = false;
