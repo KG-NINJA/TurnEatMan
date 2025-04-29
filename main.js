@@ -459,7 +459,7 @@ function update() {
 function draw() {
   ctx.clearRect(0,0,W,H);
   // デバッグ: draw呼び出しとプレイヤー座標/map確認
-  console.log('draw called', map[1][1], player.x, player.y);
+  // console.log('draw called', map[1][1], player.x, player.y);
   // マップ
   for(let y=0; y<MAP_H; y++) for(let x=0; x<MAP_W; x++) {
     if(!map[y]) continue;
@@ -491,13 +491,25 @@ function draw() {
     ctx.arc(m.x*TILE+TILE/2, m.y*TILE+TILE/2, 7, 0, Math.PI*2);
     ctx.fill();
   }
-  // パワー状態表示
+  // パワー状態表示（画面下）
   if(powerCount > 0) {
     ctx.fillStyle = '#0ff';
     ctx.font = '16px sans-serif';
     ctx.fillText('POWER: ' + powerCount, 10, H-10);
   }
+  // パワー残りターンを画面中央に大きく表示
+  const timerDiv = document.getElementById('power-timer');
+  if (timerDiv) {
+    if (powerCount > 0) {
+      timerDiv.textContent = powerCount;
+      timerDiv.style.opacity = 1;
+    } else {
+      timerDiv.textContent = '';
+      timerDiv.style.opacity = 0;
+    }
+  }
 }
+
 
 function gameLoop() {
   draw();
