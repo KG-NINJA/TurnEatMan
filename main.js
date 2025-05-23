@@ -9,7 +9,7 @@ const H = canvas.height;
 // マップ設定（シンプルなパックマン風迷路 28x31）
 const MAP_W = 36;
 const MAP_H = 41;
-const TILE = 16;
+const TILE = 24;
 // 0: 通路, 1: 壁, 2: ドット, 3: パワーエサ
 // 必ずスタート地点と敵の周囲を通路に修正（fixList）
 const fixList = [
@@ -464,15 +464,15 @@ function draw() {
   for(let y=0; y<MAP_H; y++) for(let x=0; x<MAP_W; x++) {
     if(!map[y]) continue;
     if(map[y][x] === 1) {
-      ctx.fillStyle = '#22f';
+      ctx.fillStyle = '#55f';
       ctx.fillRect(x*TILE, y*TILE, TILE, TILE);
     } else if(map[y][x] === 2) {
-      ctx.fillStyle = '#ff0';
+      ctx.fillStyle = '#ffff00';
       ctx.beginPath();
       ctx.arc(x*TILE+TILE/2, y*TILE+TILE/2, 2, 0, Math.PI*2);
       ctx.fill();
     } else if(map[y][x] === 3) {
-      ctx.fillStyle = '#0ff';
+      ctx.fillStyle = '#00ffff';
       ctx.beginPath();
       ctx.arc(x*TILE+TILE/2, y*TILE+TILE/2, 5, 0, Math.PI*2);
       ctx.fill();
@@ -481,14 +481,14 @@ function draw() {
   // プレイヤー（パワー状態なら紫、通常は黄色）
   ctx.fillStyle = (powerCount > 0) ? '#c0f' : '#ff0';
   ctx.beginPath();
-  ctx.arc(player.x*TILE+TILE/2, player.y*TILE+TILE/2, 7, 0, Math.PI*2);
+  ctx.arc(player.x*TILE+TILE/2, player.y*TILE+TILE/2, 10, 0, Math.PI*2);
   ctx.fill();
   // モンスター
   ctx.fillStyle = '#f44';
   for(const m of monsters) {
     if(!m.alive) continue;
     ctx.beginPath();
-    ctx.arc(m.x*TILE+TILE/2, m.y*TILE+TILE/2, 7, 0, Math.PI*2);
+    ctx.arc(m.x*TILE+TILE/2, m.y*TILE+TILE/2, 10, 0, Math.PI*2);
     ctx.fill();
   }
   // パワー状態表示（画面下）
