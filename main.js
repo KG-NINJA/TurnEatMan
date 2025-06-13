@@ -188,6 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 600);
     }, { once: true });
   }
+  fanfare();
+  update();
+  gameLoop();
 });
 
 // --- 実況読み上げ（TTS）・キュー制御付き ---
@@ -233,22 +236,48 @@ function getDramaticNarration({power, close, adjacent, gameover, clear}) {
       "Are you scared, monster? Here I come!",
       "Come at me! Now it's your turn to run!",
       "Full power! Now you run for your life!",
-      "Tremble and wait, monster!"
+      "Tremble and wait, monster!",
+      "This is my chance to chomp you down!",
+      "I've got the power, time to turn the tables!",
+      "Nowhere to hide, ghost!",
+      "I'm shining! Time for revenge!",
+      "Run if you can, I'm unstoppable!"
     ];
     return lines[Math.floor(Math.random()*lines.length)];
   }
-  if(adjacent) return "Danger! An enemy is right next to you! This is a critical situation!";
+  if(adjacent) {
+    const lines = [
+      "Danger! An enemy is right next to you! This is a critical situation!",
+      "Watch out! It's right beside you!",
+      "Woah, there's one breathing down your neck!",
+      "Yikes! A ghost is within arm's reach!",
+      "Careful! It's right there next to you!"
+    ];
+    return lines[Math.floor(Math.random()*lines.length)];
+  }
   if(close) {
     const lines = [
       "An enemy is getting closer! Eat-Man, run! Tension is rising!",
       "Oh no, the enemy is closing in! What will you do, Eat-Man!?",
       "Watch out! You can sense the enemy nearby!",
       "Eat-Man, you're in trouble! The enemy is right in front of you!",
-      "My heart is pounding... The enemy is near! This is dangerous!danger,danger!"
+      "My heart is pounding... The enemy is near! This is dangerous!danger,danger!",
+      "The ghost is gaining on you, hurry!",
+      "It's getting hot! That ghost is close!",
+      "Just a few steps away! Stay sharp!",
+      "They're coming fast! Keep moving!"
     ];
     return lines[Math.floor(Math.random()*lines.length)];
   }
-  if(power) return "Power pellet acquired! Now's your chance to fight back, Eat-Man!";
+  if(power) {
+    const lines = [
+      "Power pellet acquired! Now's your chance to fight back, Eat-Man!",
+      "Feel the power surge! Let's gobble them up!",
+      "Power mode on! Time to scare those ghosts!",
+      "I'm invincible for now! Go get 'em!"
+    ];
+    return lines[Math.floor(Math.random()*lines.length)];
+  }
   // Chill lines (when no enemy is close, 80% chance)
   if(!power && !close && !adjacent && Math.random() < 0.8) {
     const lines = [
@@ -256,7 +285,11 @@ function getDramaticNarration({power, close, adjacent, gameover, clear}) {
       "Still going strong!",
       "I'll eat them all at this pace!",
       "I'm not afraid of any ghost!",
-      "Eat-Man is on fire!"
+      "Eat-Man is on fire!",
+      "Nice and quiet... for now.",
+      "Cruising through the maze!",
+      "Chomp chomp, feeling good!",
+      "Nothing can stop me today!"
     ];
     return lines[Math.floor(Math.random() * lines.length)];
   }
@@ -464,27 +497,27 @@ function draw() {
   for(let y=0; y<MAP_H; y++) for(let x=0; x<MAP_W; x++) {
     if(!map[y]) continue;
     if(map[y][x] === 1) {
-      ctx.fillStyle = '#55f';
+      ctx.fillStyle = '#4488ff';
       ctx.fillRect(x*TILE, y*TILE, TILE, TILE);
     } else if(map[y][x] === 2) {
-      ctx.fillStyle = '#ffff00';
+      ctx.fillStyle = '#ffeb3b';
       ctx.beginPath();
       ctx.arc(x*TILE+TILE/2, y*TILE+TILE/2, 2, 0, Math.PI*2);
       ctx.fill();
     } else if(map[y][x] === 3) {
-      ctx.fillStyle = '#00ffff';
+      ctx.fillStyle = '#00e6e6';
       ctx.beginPath();
       ctx.arc(x*TILE+TILE/2, y*TILE+TILE/2, 5, 0, Math.PI*2);
       ctx.fill();
     }
   }
   // プレイヤー（パワー状態なら紫、通常は黄色）
-  ctx.fillStyle = (powerCount > 0) ? '#c0f' : '#ff0';
+  ctx.fillStyle = (powerCount > 0) ? '#e040ff' : '#ffe066';
   ctx.beginPath();
   ctx.arc(player.x*TILE+TILE/2, player.y*TILE+TILE/2, 10, 0, Math.PI*2);
   ctx.fill();
   // モンスター
-  ctx.fillStyle = '#f44';
+  ctx.fillStyle = '#ff4081';
   for(const m of monsters) {
     if(!m.alive) continue;
     ctx.beginPath();
@@ -493,7 +526,7 @@ function draw() {
   }
   // パワー状態表示（画面下）
   if(powerCount > 0) {
-    ctx.fillStyle = '#0ff';
+    ctx.fillStyle = '#18ffff';
     ctx.font = '16px sans-serif';
     ctx.fillText('POWER: ' + powerCount, 10, H-10);
   }
@@ -515,6 +548,3 @@ function gameLoop() {
   draw();
   requestAnimationFrame(gameLoop);
 }
-fanfare();
-update();
-gameLoop();
