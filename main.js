@@ -188,6 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 600);
     }, { once: true });
   }
+  fanfare();
+  update();
+  gameLoop();
 });
 
 // --- 実況読み上げ（TTS）・キュー制御付き ---
@@ -233,22 +236,48 @@ function getDramaticNarration({power, close, adjacent, gameover, clear}) {
       "Are you scared, monster? Here I come!",
       "Come at me! Now it's your turn to run!",
       "Full power! Now you run for your life!",
-      "Tremble and wait, monster!"
+      "Tremble and wait, monster!",
+      "This is my chance to chomp you down!",
+      "I've got the power, time to turn the tables!",
+      "Nowhere to hide, ghost!",
+      "I'm shining! Time for revenge!",
+      "Run if you can, I'm unstoppable!"
     ];
     return lines[Math.floor(Math.random()*lines.length)];
   }
-  if(adjacent) return "Danger! An enemy is right next to you! This is a critical situation!";
+  if(adjacent) {
+    const lines = [
+      "Danger! An enemy is right next to you! This is a critical situation!",
+      "Watch out! It's right beside you!",
+      "Woah, there's one breathing down your neck!",
+      "Yikes! A ghost is within arm's reach!",
+      "Careful! It's right there next to you!"
+    ];
+    return lines[Math.floor(Math.random()*lines.length)];
+  }
   if(close) {
     const lines = [
       "An enemy is getting closer! Eat-Man, run! Tension is rising!",
       "Oh no, the enemy is closing in! What will you do, Eat-Man!?",
       "Watch out! You can sense the enemy nearby!",
       "Eat-Man, you're in trouble! The enemy is right in front of you!",
-      "My heart is pounding... The enemy is near! This is dangerous!danger,danger!"
+      "My heart is pounding... The enemy is near! This is dangerous!danger,danger!",
+      "The ghost is gaining on you, hurry!",
+      "It's getting hot! That ghost is close!",
+      "Just a few steps away! Stay sharp!",
+      "They're coming fast! Keep moving!"
     ];
     return lines[Math.floor(Math.random()*lines.length)];
   }
-  if(power) return "Power pellet acquired! Now's your chance to fight back, Eat-Man!";
+  if(power) {
+    const lines = [
+      "Power pellet acquired! Now's your chance to fight back, Eat-Man!",
+      "Feel the power surge! Let's gobble them up!",
+      "Power mode on! Time to scare those ghosts!",
+      "I'm invincible for now! Go get 'em!"
+    ];
+    return lines[Math.floor(Math.random()*lines.length)];
+  }
   // Chill lines (when no enemy is close, 80% chance)
   if(!power && !close && !adjacent && Math.random() < 0.8) {
     const lines = [
@@ -256,7 +285,11 @@ function getDramaticNarration({power, close, adjacent, gameover, clear}) {
       "Still going strong!",
       "I'll eat them all at this pace!",
       "I'm not afraid of any ghost!",
-      "Eat-Man is on fire!"
+      "Eat-Man is on fire!",
+      "Nice and quiet... for now.",
+      "Cruising through the maze!",
+      "Chomp chomp, feeling good!",
+      "Nothing can stop me today!"
     ];
     return lines[Math.floor(Math.random() * lines.length)];
   }
@@ -515,6 +548,3 @@ function gameLoop() {
   draw();
   requestAnimationFrame(gameLoop);
 }
-fanfare();
-update();
-gameLoop();
