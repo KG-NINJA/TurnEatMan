@@ -464,27 +464,27 @@ function draw() {
   for(let y=0; y<MAP_H; y++) for(let x=0; x<MAP_W; x++) {
     if(!map[y]) continue;
     if(map[y][x] === 1) {
-      ctx.fillStyle = '#55f';
+      ctx.fillStyle = '#4488ff';
       ctx.fillRect(x*TILE, y*TILE, TILE, TILE);
     } else if(map[y][x] === 2) {
-      ctx.fillStyle = '#ffff00';
+      ctx.fillStyle = '#ffeb3b';
       ctx.beginPath();
       ctx.arc(x*TILE+TILE/2, y*TILE+TILE/2, 2, 0, Math.PI*2);
       ctx.fill();
     } else if(map[y][x] === 3) {
-      ctx.fillStyle = '#00ffff';
+      ctx.fillStyle = '#00e6e6';
       ctx.beginPath();
       ctx.arc(x*TILE+TILE/2, y*TILE+TILE/2, 5, 0, Math.PI*2);
       ctx.fill();
     }
   }
   // プレイヤー（パワー状態なら紫、通常は黄色）
-  ctx.fillStyle = (powerCount > 0) ? '#c0f' : '#ff0';
+  ctx.fillStyle = (powerCount > 0) ? '#e040ff' : '#ffe066';
   ctx.beginPath();
   ctx.arc(player.x*TILE+TILE/2, player.y*TILE+TILE/2, 10, 0, Math.PI*2);
   ctx.fill();
   // モンスター
-  ctx.fillStyle = '#f44';
+  ctx.fillStyle = '#ff4081';
   for(const m of monsters) {
     if(!m.alive) continue;
     ctx.beginPath();
@@ -493,7 +493,7 @@ function draw() {
   }
   // パワー状態表示（画面下）
   if(powerCount > 0) {
-    ctx.fillStyle = '#0ff';
+    ctx.fillStyle = '#18ffff';
     ctx.font = '16px sans-serif';
     ctx.fillText('POWER: ' + powerCount, 10, H-10);
   }
