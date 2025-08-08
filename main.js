@@ -74,10 +74,11 @@ function generatePacmanMaze() {
 const player = { x: 2, y: 2, dir: 0, nextDir: 0, alive: true };
 let gameOver = false;
 let powerCount = 0; // パワー状態の残りターン
+// 敵モンスターは色と性格を持つ
 const monsters = [
-  { x: MAP_W-2, y: 1, dir: 2, alive: true, respawn: 0, initX: MAP_W-2, initY: 1 }, // 右上
-  { x: 1, y: MAP_H-2, dir: 1, alive: true, respawn: 0, initX: 1, initY: MAP_H-2 }, // 左下
-  { x: MAP_W-2, y: MAP_H-2, dir: 3, alive: true, respawn: 0, initX: MAP_W-2, initY: MAP_H-2 }, // 右下
+  { x: MAP_W-2, y: 1, dir: 2, alive: true, respawn: 0, initX: MAP_W-2, initY: 1, color: '#ff0000', type: 'aggressive' }, // 右上: 追跡型
+  { x: 1, y: MAP_H-2, dir: 1, alive: true, respawn: 0, initX: 1, initY: MAP_H-2, color: '#00ff00', type: 'coward' },     // 左下: 逃避型
+  { x: MAP_W-2, y: MAP_H-2, dir: 3, alive: true, respawn: 0, initX: MAP_W-2, initY: MAP_H-2, color: '#0000ff', type: 'random' },  // 右下: ランダム型
 ];
 gameOver = false;
 
@@ -439,30 +440,29 @@ function update() {
       }
     }
   }
-  // 敵もターンで動く（たまに自機から離れる）
+  // 敵もターンで動く（色ごとの性格で行動）
   for(const m of monsters) {
     if(!m.alive) continue; // 消えてる敵は動かさない
     const dx = [1,0,-1,0], dy = [0,1,0,-1];
     let dirs = [];
-    let targetDist, cmp;
-    if(Math.random() < 0.2) {
-      // 20%の確率で離れる方向
-      targetDist = -Infinity;
-      cmp = (a, b) => a > b;
+    if(m.type === 'random') {
+      for(let d=0; d<4; d++) {
+        let nx = m.x + dx[d], ny = m.y + dy[d];
+        if(canMove(nx, ny)) dirs.push(d);
+      }
     } else {
-      // それ以外は近づく方向
-      targetDist = Infinity;
-      cmp = (a, b) => a < b;
-    }
-    for(let d=0; d<4; d++) {
-      let nx = m.x + dx[d], ny = m.y + dy[d];
-      if(canMove(nx, ny)) {
-        let dist = Math.abs(nx - player.x) + Math.abs(ny - player.y);
-        if(cmp(dist, targetDist)) {
-          targetDist = dist;
-          dirs = [d];
-        } else if(dist === targetDist) {
-          dirs.push(d);
+      let targetDist = (m.type === 'aggressive') ? Infinity : -Infinity;
+      let cmp = (m.type === 'aggressive') ? (a,b)=>a<b : (a,b)=>a>b;
+      for(let d=0; d<4; d++) {
+        let nx = m.x + dx[d], ny = m.y + dy[d];
+        if(canMove(nx, ny)) {
+          let dist = Math.abs(nx - player.x) + Math.abs(ny - player.y);
+          if(cmp(dist, targetDist)) {
+            targetDist = dist;
+            dirs = [d];
+          } else if(dist === targetDist) {
+            dirs.push(d);
+          }
         }
       }
     }
@@ -517,9 +517,9 @@ function draw() {
   ctx.arc(player.x*TILE+TILE/2, player.y*TILE+TILE/2, 10, 0, Math.PI*2);
   ctx.fill();
   // モンスター
-  ctx.fillStyle = '#ff4081';
   for(const m of monsters) {
     if(!m.alive) continue;
+    ctx.fillStyle = m.color;
     ctx.beginPath();
     ctx.arc(m.x*TILE+TILE/2, m.y*TILE+TILE/2, 10, 0, Math.PI*2);
     ctx.fill();
